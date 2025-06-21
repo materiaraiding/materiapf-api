@@ -67,6 +67,53 @@ router.get('/lfs', async (request, env) => {
   }
 });
 
+// Combined endpoint for all types of threads
+router.get('/threads', async (request, env) => {
+  try {
+    const url = new URL(request.url);
+    const type = url.searchParams.get('type')?.toLowerCase();
+
+    let channelId;
+    switch (type) {
+      case 'lfg':
+        channelId = env.LFG_CHANNEL_ID;
+        break;
+      case 'lfm':
+        channelId = env.LFM_CHANNEL_ID;
+        break;
+      case 'lfs':
+        channelId = env.LFS_CHANNEL_ID;
+        break;
+      default:
+        // If no type provided or invalid type, return all threads
+        const { results } = await env.DB.prepare(`
+          SELECT * FROM discord_threads
+        `).all();
+
+        return new Response(JSON.stringify({ success: true, data: results }), {
+          headers: { 'Content-Type': 'application/json' },
+        });
+    }
+
+    // If a valid type was provided, query for that specific channel
+    const { results } = await env.DB.prepare(`
+      SELECT * FROM discord_threads
+      WHERE parent_id = ?
+    `)
+    .bind(channelId)
+    .all();
+
+    return new Response(JSON.stringify({ success: true, data: results }), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({ success: false, error: error.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+});
+
 router.get('/tags', async (request, env) => {
   try {
     // Query all tags from discord_channel_tags table
