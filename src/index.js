@@ -67,6 +67,25 @@ router.get('/lfs', async (request, env) => {
   }
 });
 
+router.get('/tags', async (request, env) => {
+  try {
+    // Query all tags from discord_channel_tags table
+    const { results } = await env.DB.prepare(`
+      SELECT * FROM discord_channel_tags
+    `)
+    .all();
+
+    return new Response(JSON.stringify({ success: true, data: results }), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({ success: false, error: error.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+});
+
 // Add a catch-all route for 404s
 router.all('*', () => {
   return new Response('Not Found', { status: 404 });
