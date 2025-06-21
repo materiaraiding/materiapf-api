@@ -1,0 +1,17 @@
+{
+  "name": "materiapf-api",
+  "version": "1.0.0",
+  "description": "API for Discord forum threads",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "private": true,
+  "dependencies": {
+    "itty-router": "^4.0.23"
+  },
+  "devDependencies": {
+    "wrangler": "^3.114.9"
+  }
+}
