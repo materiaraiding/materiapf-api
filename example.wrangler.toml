@@ -1,0 +1,17 @@
+name = ""
+main = "src/index.js"
+compatibility_flags = [ "nodejs_compat" ]
+compatibility_date = "2024-09-23"
+
+# Configure D1 database binding
+[[d1_databases]]
+binding = "DB" # Available in your Worker as env.DB
+database_name = "discord_threads_db"
+database_id = "" # You'll need to fill this in after creating your D1 database
+
+# Configure CORS headers
+[vars]
+ALLOWED_ORIGINS = "*"
+LFG_CHANNEL_ID = ""
+LFM_CHANNEL_ID = ""
+LFS_CHANNEL_ID = ""
